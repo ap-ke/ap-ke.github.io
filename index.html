@@ -1,10 +1,91 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>ap-ke</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Nutrition - Gemini Edition</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; justify-content: center; padding: 40px; background: #eef2f3; }
+        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 450px; }
+        textarea { width: 100%; height: 100px; margin: 15px 0; border-radius: 8px; border: 1px solid #ddd; padding: 12px; box-sizing: border-box; font-size: 16px; }
+        button { width: 100%; padding: 12px; background: #1a73e8; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; }
+        button:disabled { background: #ccc; }
+        .results { margin-top: 25px; border-top: 2px solid #f0f0f0; padding-top: 20px; }
+        .stat { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 18px; }
+        .stat b { color: #1a73e8; }
+    </style>
 </head>
 <body>
-  <h1>Hello 👋</h1>
-  <p>Fresh start. This is my site.</p>
+
+<div class="card">
+    <h2>🥗 Gemini Nutrition AI</h2>
+    <p>Tell me what you ate today:</p>
+    <textarea id="foodInput" placeholder="e.g., Two slices of pizza and a coke"></textarea>
+    <button id="btn" onclick="analyzeWithGemini()">Analyze Meal</button>
+
+    <div id="results" class="results" style="display:none;">
+        <div class="stat"><span>Calories:</span> <b id="cal">-</b></div>
+        <div class="stat"><span>Protein:</span> <b id="pro">-</b></div>
+        <div class="stat"><span>Carbs:</span> <b id="carb">-</b></div>
+        <div class="stat"><span>Fats:</span> <b id="fat">-</b></div>
+    </div>
+</div>
+
+<script type="importmap">
+  {
+    "imports": {
+      "@google/generative-ai": "https://esm.run/@google/generative-ai"
+    }
+  }
+</script>
+
+<script type="module">
+    import { GoogleGenerativeAI } from "@google/generative-ai";
+
+    // ⚠️ WARNING: Putting your key here makes it public on GitHub Pages.
+    // For a personal project it's fine, but don't use it for a big commercial app!
+    const API_KEY = "YOUR_GEMINI_API_KEY_HERE"; 
+    const genAI = new GoogleGenerativeAI(API_KEY);
+
+    window.analyzeWithGemini = async function() {
+        const input = document.getElementById('foodInput').value;
+        const btn = document.getElementById('btn');
+        if (!input) return alert("Please enter some food!");
+
+        btn.disabled = true;
+        btn.innerText = "Gemini is thinking...";
+
+        try {
+            const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash"});
+            
+            const prompt = `Act as a nutritionist. Analyze this meal: "${input}". 
+            Provide ONLY a JSON object with these keys: calories, protein, carbs, fat. 
+            Use numbers only (grams). Example: {"calories": 200, "protein": 10, "carbs": 20, "fat": 5}`;
+
+            const result = await model.generateContent(prompt);
+            const response = await result.response;
+            const text = response.text();
+            
+            // Clean up the response (Gemini sometimes adds ```json)
+            const cleanJson = text.replace(/```json/g, "").replace(/```/g, "").trim();
+            const data = JSON.parse(cleanJson);
+
+            // Display results
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('cal').innerText = data.calories;
+            document.getElementById('pro').innerText = data.protein + 'g';
+            document.getElementById('carb').innerText = data.carbs + 'g';
+            document.getElementById('fat').innerText = data.fat + 'g';
+
+        } catch (error) {
+            console.error(error);
+            alert("Error connecting to Gemini. Check your API key!");
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "Analyze Meal";
+        }
+    }
+</script>
+
 </body>
 </html>
