@@ -1,16 +1,17 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Me</title>
+    <title>Secret Page</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0; 
         }
 
+        /* Header styling */
         header {
             background-color: #333;
             color: white;
@@ -31,18 +32,32 @@
         main {
             padding: 20px;
         }
+
+        #content { display: none; }
     </style>
 </head>
 <body>
-    <h1></h1>
-    <p id="prompt">Enter the password to view this page:</p>
-    <input type="password" id="passwordInput">
-    <button onclick="checkPassword()">Submit</button>
+    <!-- Header with navigation -->
+    <header>
+        <h1>Secret Page</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+            <a href="secret.html">Secret</a>
+        </nav>
+    </header>
 
-    <div id="content">
-        <h2>Welcome to the secret page!</h2>
-        <p>This content is “protected” by a password (but not fully secure).</p>
-    </div>
+    <main>
+        <p id="prompt">Enter the password to view this page:</p>
+        <input type="password" id="passwordInput">
+        <button onclick="checkPassword()">Submit</button>
+
+        <div id="content">
+            <h2>Welcome to the secret page!</h2>
+            <p>This content is “protected” by a password (remember: not fully secure).</p>
+        </div>
+    </main>
 
     <script>
         function checkPassword() {
@@ -50,7 +65,7 @@
             const content = document.getElementById('content');
             const prompt = document.getElementById('prompt');
 
-            const password = "alice"; // <-- set your password here
+            const password = "abc"; // <-- set your password here
 
             if(input === password) {
                 prompt.style.display = "none";
