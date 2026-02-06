@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ap</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        #content { display: none; }
+    </style>
+</head>
+<body>
+    <h1></h1>
+    <p id="prompt">Enter the password to view this page:</p>
+    <input type="password" id="passwordInput">
+    <button onclick="checkPassword()">Submit</button>
+
+    <div id="content">
+        <h2>Welcome to the secret page!</h2>
+        <p>This content is “protected” by a password (but not fully secure).</p>
+    </div>
+
+    <script>
+        function checkPassword() {
+            const input = document.getElementById('passwordInput').value;
+            const content = document.getElementById('content');
+            const prompt = document.getElementById('prompt');
+
+            const password = "alice"; // <-- set your password here
+
+            if(input === password) {
+                prompt.style.display = "none";
+                document.getElementById('passwordInput').style.display = "none";
+                content.style.display = "block";
+            } else {
+                alert("Incorrect password. Try again!");
+            }
+        }
+    </script>
+</body>
+</html>
